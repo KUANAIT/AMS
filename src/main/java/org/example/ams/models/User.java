@@ -16,4 +16,9 @@ public class User {
     private int groupNumber;
     private double attendance;
     private boolean retake;
+
+    public void setAttendance(double attendance) {
+        this.attendance = attendance;
+        this.retake = attendance < 50;
+    }
 }
