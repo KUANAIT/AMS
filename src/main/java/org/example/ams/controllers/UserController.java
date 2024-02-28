@@ -66,8 +66,8 @@ public class UserController {
         return new ResponseEntity<>("Deleted user with ID: " + id, HttpStatus.OK);
     }
 
-    @GetMapping("/surname/{user_surname}")
-    public List<User> getAllBySurname(@PathVariable("user_surname") String surname){
+    @GetMapping("/surname/{surname}")
+    public List<User> getAllBySurname(@PathVariable("surname") String surname){
         return userService.getBySurname(surname);
     }
 

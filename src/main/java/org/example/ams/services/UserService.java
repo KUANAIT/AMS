@@ -2,7 +2,7 @@ package org.example.ams.services;
 import org.example.ams.models.User;
 import org.example.ams.repositories.UserRepositoryInterface;
 import org.example.ams.services.interfaces.UserServiceInterface;
-    import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,13 +32,13 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User save(User user) {
-        return repo.save(user);
+    public void save(User user) {
+        repo.save(user);
     }
 
     @Override
-    public User update(User user) {
-        return repo.save(user);
+    public void update(User user) {
+        repo.save(user);
     }
 
     @Override
