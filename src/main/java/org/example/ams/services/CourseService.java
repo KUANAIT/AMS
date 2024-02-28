@@ -12,8 +12,8 @@ public class CourseService implements CourseServiceInterface {
     private final CourseRepositoryInterface repo;
 
     @Autowired
-    public CourseService(CourseRepositoryInterface userRepository) {
-        this.repo = userRepository;
+    public CourseService(CourseRepositoryInterface courseRepository) {
+        this.repo = courseRepository;
     }
 
     @Override
