@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "attendancerecord")
-
 public class AttendanceRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

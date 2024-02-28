@@ -45,4 +45,14 @@ public class UserService implements UserServiceInterface {
     public void delete(int id) {
         repo.deleteById(id);
     }
+
+    public void addAttendance(int userId, double attendanceToAdd) {
+        User user = getById(userId);
+        if (user != null) {
+            double newAttendance = user.getAttendance() + attendanceToAdd;
+            newAttendance = Math.max(0, Math.min(100, newAttendance));
+            user.setAttendance(newAttendance);
+            update(user);
+        }
+    }
 }

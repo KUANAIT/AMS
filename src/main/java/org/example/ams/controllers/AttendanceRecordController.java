@@ -1,7 +1,9 @@
 package org.example.ams.controllers;
 
 import org.example.ams.models.AttendanceRecord;
+import org.example.ams.models.User;
 import org.example.ams.services.AttendanceRecordService;
+import org.example.ams.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,13 @@ import java.util.List;
 @RequestMapping("attendancerecord")
 public class AttendanceRecordController {
     private final AttendanceRecordService attendanceRecordService;
+    private final UserService userService;
+
 
     @Autowired
-    public AttendanceRecordController(AttendanceRecordService attendanceRecordService) {
+    public AttendanceRecordController(AttendanceRecordService attendanceRecordService, UserService userService) {
         this.attendanceRecordService = attendanceRecordService;
+        this.userService = userService;
     }
 
     @GetMapping("hello")
@@ -49,6 +54,10 @@ public class AttendanceRecordController {
                     attendanceRecord.getCourseId() == retrievedRecord.getCourseId() &&
                     attendanceRecord.getDate().equals(retrievedRecord.getDate()) &&
                     attendanceRecord.isPresent() == retrievedRecord.isPresent()) {
+                User user = userService.getById(attendanceRecord.getUserId());
+                if (user != null) {
+                    userService.addAttendance(user.getId(), attendanceRecord.isPresent() ? 1.3 : -1.3);
+                }
                 return new ResponseEntity<>(retrievedRecord, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
