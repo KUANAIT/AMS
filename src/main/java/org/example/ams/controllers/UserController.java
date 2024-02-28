@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/students")
+@RequestMapping("students")
 public class UserController {
 
     private final UserService userService;
@@ -18,6 +18,11 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("hello")
+    public String sayHello(){
+        return "Hello World";
     }
 
     @GetMapping("/")
