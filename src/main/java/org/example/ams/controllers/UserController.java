@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/students")
 public class UserController {
@@ -18,10 +20,25 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public List<User> getAll(){
+        return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getById(@PathVariable("id") int id){
+        User user = userService.getById(id);
+        if(user == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); //404
+
+        return new ResponseEntity<>(user, HttpStatus.OK); //200
+    }
+
+
     @PostMapping("/save")
     public ResponseEntity<User> saveAndFindUser(@RequestBody User user) {
         userService.save(user);
-        User retrievedUser = userService.find(user.getId());
+        User retrievedUser = userService.getById(user.getId());
 
         if (retrievedUser != null) {
             if (user.getName().equals(retrievedUser.getName()) &&
@@ -49,13 +66,9 @@ public class UserController {
         return new ResponseEntity<>("Deleted user with ID: " + id, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> findUser(@PathVariable int id) {
-        User user = userService.find(id);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/surname/{user_surname}")
+    public List<User> getAllBySurname(@PathVariable("user_surname") String surname){
+        return userService.getBySurname(surname);
     }
+
 }
