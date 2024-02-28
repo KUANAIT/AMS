@@ -1,38 +1,48 @@
 package org.example.ams.services;
 import org.example.ams.models.User;
 import org.example.ams.repositories.UserRepositoryInterface;
-import org.example.ams.services.interfaces.UserServiceInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-
-public class UserService implements UserServiceInterface {
-
+public class UserService {
     private final UserRepositoryInterface repo;
 
-    public UserService(UserRepositoryInterface repo) {
-        this.repo = repo;
+    @Autowired
+    public UserService(UserRepositoryInterface userRepository) {
+        this.repo = userRepository;
     }
 
-    @Override
-    public List<User> getAll() {
-        return repo.findAll();
+    public User find(int id) {
+        Optional<User> user = repo.findById(id);
+        return user.orElse(null);
     }
 
-    @Override
-    public User getById(int id) {
-        return repo.findById(id).orElse(null);
-    }
-
-    @Override
-    public User create(User user) {
+    public User save(User user) {
         return repo.save(user);
     }
 
-    @Override
+    public User update(User user) {
+        return repo.save(user);
+    }
+
+    public void delete(int id) {
+        repo.deleteById(id);
+    }
+
     public List<User> getBySurname(String surname) {
         return repo.findBySurname(surname);
+    }
+
+    public void addAttendance(int userId, double attendanceToAdd) {
+        User user = find(userId);
+        if (user != null) {
+            double newAttendance = user.getAttendance() + attendanceToAdd;
+            user.setAttendance(newAttendance);
+            update(user);
+        }
     }
 }

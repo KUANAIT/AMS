@@ -1,53 +1,61 @@
 package org.example.ams.controllers;
+
 import org.example.ams.models.User;
-import org.example.ams.services.interfaces.UserServiceInterface;
+import org.example.ams.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("students")
+@RequestMapping("/students")
 public class UserController {
 
-    private final UserServiceInterface service;
+    private final UserService userService;
 
-    public UserController(UserServiceInterface service) {
-        this.service = service;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("hello")
-    public String sayHello(){
-        return "Hello World";
+    @PostMapping("/save")
+    public ResponseEntity<User> saveAndFindUser(@RequestBody User user) {
+        userService.save(user);
+        User retrievedUser = userService.find(user.getId());
+
+        if (retrievedUser != null) {
+            if (user.getName().equals(retrievedUser.getName()) &&
+                    user.getSurname().equals(retrievedUser.getSurname()) &&
+                    user.getGroupNumber() == retrievedUser.getGroupNumber() &&
+                    Math.abs(user.getAttendance() - retrievedUser.getAttendance()) < 0.01) {
+                return new ResponseEntity<>(retrievedUser, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/")
-    public List<User> getAll(){
-        return service.getAll();
+    @PutMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
+        userService.update(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id) {
+        userService.delete(id);
+        return new ResponseEntity<>("Deleted user with ID: " + id, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable("id") int id){
-        User user = service.getById(id);
-        if(user == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); //404
-
-        return new ResponseEntity<>(user, HttpStatus.OK); //200
+    public ResponseEntity<User> findUser(@PathVariable int id) {
+        User user = userService.find(id);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
-
-    @PostMapping("/")
-    public ResponseEntity<User> create(@RequestBody User user){
-        User createdUser = service.create(user);
-        if(createdUser == null)
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED); //201
-    }
-
-    @GetMapping("/surname/{user_surname}")
-    public List<User> getAllBySurname(@PathVariable("user_surname") String surname){
-        return service.getBySurname(surname);
-    }
-
 }

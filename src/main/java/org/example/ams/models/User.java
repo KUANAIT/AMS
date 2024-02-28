@@ -15,4 +15,5 @@ public class User {
     private String surname;
     private int groupNumber;
     private double attendance;
+    private boolean retake;
 }
