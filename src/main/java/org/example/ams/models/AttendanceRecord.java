@@ -16,4 +16,10 @@ public class AttendanceRecord {
     private int courseId;
     private LocalDate date;
     private boolean present;
+
+    @PrePersist
+    public void prePersist() {
+        this.date = LocalDate.now();
+    }
 }
+
